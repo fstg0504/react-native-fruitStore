@@ -1,20 +1,23 @@
-import React from 'react';
-import { Image } from 'react-native';
+import React from 'react'
+import { Image } from 'react-native'
 import {
   createStackNavigator,
   createBottomTabNavigator,
   createAppContainer
-} from 'react-navigation';
-import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator';
-import HomeScreen from './scene/Home/HomeScreen';
-import CategoryScreen from './scene/Category/CategoryScreen';
-import CartScreen from './scene/Cart/CartScreen';
-import MineScreen from './scene/Mine/MineScreen';
-import ItemDetail from './scene/ItemDetail/ItemDetail';
-import OrderScreen from './scene/Order/OrderScreen';
+} from 'react-navigation'
+import StackViewStyleInterpolator from 'react-navigation-stack/src/views/StackView/StackViewStyleInterpolator'
+import HomeScreen from './scene/Home/HomeScreen'
+import CategoryScreen from './scene/Category/CategoryScreen'
+import CartScreen from './scene/Cart/CartScreen'
+import MineScreen from './scene/Mine/MineScreen'
+import ItemDetail from './scene/ItemDetail/ItemDetail'
+import OrderScreen from './scene/Order/OrderScreen'
+import Login from './scene/Mine/Login'
+import Register from './scene/Mine/Register'
+import UserScreen from './scene/User/UserScreen'
 
-import TabBarItem from './common/tabBarItem';
-import theme from './common/theme';
+import TabBarItem from './common/tabBarItem'
+import theme from './common/theme'
 
 const routeOptMap = {
   Home: {
@@ -41,6 +44,21 @@ const routeOptMap = {
     normalImage: require('./img/mine.png'),
     tabBarLabel: '我的'
   },
+  Login: {
+    headerTitle: '登录',
+    selectedImage: require('./img/mineSelect.png'),
+    normalImage: require('./img/mine.png'),
+    tabBarLabel: '登录'
+  },
+  UserScreen: {
+    headerTitle: 'UserScreen',
+    selectedImage: require('./img/mineSelect.png'),
+    normalImage: require('./img/mine.png'),
+    tabBarLabel: 'UserScreen'
+  },
+  Register: {
+    headerTitle: '注册'
+  },
   ItemDetail: {
     headerTitle: '商品信息'
   },
@@ -50,7 +68,7 @@ const routeOptMap = {
   CartScreen: {
     headerTitle: '购物车'
   }
-};
+}
 
 // 默认header配置
 const defaultHeaderOpts = {
@@ -64,27 +82,30 @@ const defaultHeaderOpts = {
     height: 38,
     backgroundColor: theme.color
   }
-};
+}
 
 const HeaderBackImage = () => (
   <Image
     style={{ marginLeft: 2, width: 25, height: 25 }}
     source={require('./img/arrow.png')}
   />
-);
+)
 
 const TabNavigator = createBottomTabNavigator(
   {
     Home: HomeScreen,
     Category: CategoryScreen,
     Cart: CartScreen,
+    Login,
+    UserScreen,
+    // Register,
     Mine: MineScreen
   },
   {
     // tabBar配置统一在这里配置
     // 不需要到每个页面中进行配置了
     defaultNavigationOptions: ({ navigation }) => {
-      const { routeName } = navigation.state;
+      const { routeName } = navigation.state
       return {
         tabBarLabel: routeOptMap[routeName].tabBarLabel,
         /* eslint-disable-next-line */
@@ -96,7 +117,7 @@ const TabNavigator = createBottomTabNavigator(
             normalImage={routeOptMap[routeName].normalImage}
           />
         )
-      };
+      }
     },
     tabBarOptions: {
       activeTintColor: theme.color,
@@ -106,29 +127,31 @@ const TabNavigator = createBottomTabNavigator(
       }
     }
   }
-);
+)
 
 // header相关配置需要在这里写
 TabNavigator.navigationOptions = ({ navigation }) => {
-  const { routeName } = navigation.state.routes[navigation.state.index];
+  const { routeName } = navigation.state.routes[navigation.state.index]
   return {
     ...defaultHeaderOpts,
     headerTitle: routeOptMap[routeName].headerTitle
-  };
-};
+  }
+}
 
 const AppNavigator = createStackNavigator(
   {
     Tab: TabNavigator,
     ItemDetail,
     CartScreen,
-    OrderScreen
+    Register,
+    UserScreen,
+    Login
   },
   {
     initialRouteName: 'Tab',
     mode: 'card',
     defaultNavigationOptions: ({ navigation }) => {
-      const { routeName } = navigation.state;
+      const { routeName } = navigation.state
       return {
         ...defaultHeaderOpts,
         gesturesEnabled: true,
@@ -136,15 +159,15 @@ const AppNavigator = createStackNavigator(
         headerTitle:
           routeOptMap[routeName] && routeOptMap[routeName].headerTitle,
         headerBackImage: HeaderBackImage
-      };
+      }
     },
     transitionConfig: () => ({
       // 统一安卓和苹果页面跳转的动画
       screenInterpolator: StackViewStyleInterpolator.forHorizontal
     })
   }
-);
+)
 
-const AppContainer = createAppContainer(AppNavigator);
+const AppContainer = createAppContainer(AppNavigator)
 
-export default AppContainer;
+export default AppContainer
